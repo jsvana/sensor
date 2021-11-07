@@ -1,0 +1,10 @@
+[package]
+name = "sensor"
+version = "0.1.0"
+authors = ["Jay Vana <jaysvana@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+dht11 = "0.3.1"
+anyhow = "1.0"
+rppal = { version = "0.13.1", features = ["hal-unproven"] }
