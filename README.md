@@ -1,5 +1,7 @@
 # sensor
 
+Binary to run on a Raspberry Pi, read regular values from a DHT11 temperature and humidity sensor, and submit values to an MQTT topic.
+
 ## Hardware
 
 This assumes you're using a DHT11 temperature and humidity sensor.
