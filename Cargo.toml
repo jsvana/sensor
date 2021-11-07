@@ -1,10 +1,24 @@
 [package]
-name = "sensor"
-version = "0.1.0"
 authors = ["Jay Vana <jaysvana@gmail.com>"]
 edition = "2018"
+name = "sensor"
+version = "0.1.0"
 
 [dependencies]
-dht11 = "0.3.1"
 anyhow = "1.0"
-rppal = { version = "0.13.1", features = ["hal-unproven"] }
+dht11 = "0.3.1"
+serde_json = "1.0"
+structopt = "0.3"
+
+[dependencies.paho-mqtt]
+default-features = false
+features = ["bundled"]
+version = "0.9"
+
+[dependencies.rppal]
+features = ["hal-unproven"]
+version = "0.13.1"
+
+[dependencies.serde]
+features = ["derive"]
+version = "1.0"
