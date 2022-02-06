@@ -7,4 +7,4 @@ deploy:
 	cross build --target ${TARGET} --release && scp target/${TARGET}/release/${BINARY} ${HOST}:${BINARY}
 
 run: deploy
-	ssh ${HOST} './${BINARY} --broker-address tcp://${BROKER_HOST}:1883'
+	ssh ${HOST} './${BINARY} --broker-address tcp://${BROKER_HOST}:1883 --room office'

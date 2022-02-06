@@ -22,20 +22,24 @@ struct Args {
     /// Number of seconds between each sensor check
     #[structopt(long, default_value = "5")]
     check_interval_seconds: u64,
+
+    /// Location of sensor
+    #[structopt(long)]
+    room: String,
 }
 
 #[derive(Serialize)]
 struct Measurement {
+    room: String,
     temperature: f32,
     humidity: f32,
 }
 
-impl From<dht11::Measurement> for Measurement {
-    fn from(measurement: dht11::Measurement) -> Self {
-        Self {
-            temperature: measurement.temperature as f32 / 10.0 * 1.8 + 32.0,
-            humidity: measurement.humidity as f32 / 10.0,
-        }
+fn measurement_in_room(room: String, measurement: dht11::Measurement) -> Measurement {
+    Measurement {
+        room,
+        temperature: measurement.temperature as f32 / 10.0 * 1.8 + 32.0,
+        humidity: measurement.humidity as f32 / 10.0,
     }
 }
 
@@ -43,11 +47,14 @@ fn read_and_submit_measurement(
     sensor: &mut Dht11<IoPin>,
     client: &Client,
     delay: &mut Delay,
+    room: String,
 ) -> Result<()> {
-    let measurement: Measurement = sensor
-        .perform_measurement(delay)
-        .map_err(|e| anyhow!("Error reading from sensor: {:?}", e))?
-        .into();
+    let measurement = measurement_in_room(
+        room,
+        sensor
+            .perform_measurement(delay)
+            .map_err(|e| anyhow!("Error reading from sensor: {:?}", e))?,
+    );
 
     let payload = serde_json::to_string(&measurement)?;
 
@@ -78,7 +85,9 @@ fn main() -> Result<()> {
     client.connect(None)?;
 
     loop {
-        if let Err(e) = read_and_submit_measurement(&mut sensor, &client, &mut delay) {
+        if let Err(e) =
+            read_and_submit_measurement(&mut sensor, &client, &mut delay, args.room.clone())
+        {
             println!("Error reading or submitting measurement: {:?}", e);
         }
 
